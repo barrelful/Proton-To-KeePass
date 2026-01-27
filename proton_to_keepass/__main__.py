@@ -12,7 +12,7 @@ converter.decrypt_file_to_json()
 keepManager = KeePassManager(config)
 
 if config.separate_totp:
-  keepManagerTotp = KeePassManager(config)
+  keepManagerTotp = KeePassManager(config, totp=True)
 
 group = keepManager.root
 for (_, vault) in converter.vaults:
@@ -27,7 +27,7 @@ for (_, vault) in converter.vaults:
       print(f"   Converted {entry.name}!")
 
     if config.separate_totp and entry.totp:
-      keepManagerTotp.add_entry(entry)
+      keepManagerTotp.add_entry(keepManagerTotp.root, entry)
       if config.verbose:
         print(f"   Separated {entry.name} TOTP!")
 
@@ -39,4 +39,4 @@ print(f"   Successfully converted {len(converter.vaults)} vaults!")
 print(f"   Saved to {os.path.abspath(f'{config.output_file_path}/{config.output_file_name}')}!")
 
 if config.separate_totp:
-  print(f"   Saved TOTP to {os.path.abspath(f'{config.totp_output_file_path}/{config.totp_output_file_name}')}!")
+  print(f"   Saved TOTP to {os.path.abspath(f'{config.totp_output_path}/{config.totp_output_name}')}!")
