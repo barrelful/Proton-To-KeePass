@@ -5,6 +5,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Virtual environment
+.venv/
+
+# VSCode / VSCodium
+.vscode/
+.history/
+
 # Distribution / packaging
 bin/
 build/
