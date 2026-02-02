@@ -4,9 +4,9 @@ from proton_to_keepass.config import Config
 class KeePassManager():
   def __init__(self, config: Config, totp=False):
     self._config = config
-    self._output_path = config.output_file_path if not totp else config.totp_output_file_path
-    self._output_name = config.output_file_name if not totp else config.totp_output_file_name
-    self._passkey = config.output_file_passkey if not totp else config.totp_output_file_passkey
+    self._output_path = config.output_file_path if not totp else config.totp_output_path
+    self._output_name = config.output_file_name if not totp else config.totp_output_name
+    self._passkey = config.output_file_passkey if not totp else config.totp_output_passkey
     self._db = pykeepass.create_database(f'{self._output_path}/{self._output_name}', password=self._passkey)
   
   @property

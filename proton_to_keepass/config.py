@@ -75,10 +75,10 @@ class Config():
     self.gather_output_info()
 
     self._merge_vaults = input("Merge vaults into root folder? (default: n) (y/n): ")
-    self._separate_totp = input("Separate your TOTP/2FA into their own file? (default: n) (y/n): ") or False
+    separate_totp = input("Separate your TOTP/2FA into their own file? (default: n) (y/n): ").strip().lower()
+    self._separate_totp = separate_totp == "y"
 
-    if self._separate_totp == "y":
-      self.separate_totp = True
+    if self._separate_totp:
       self.initialize_totp_db()
 
   def gather_input_info(self):
@@ -108,15 +108,15 @@ class Config():
 
   def initialize_totp_db(self):
     default_totp_filename = f"./pp_convert_totp_{self._timestamp}.kdbx"
-    self._totp_output_name = input(f"Desired name for output TOTP KDBX file ({default_totp_filename}): ") or default_totp_filename
-    self._totp_output_path = input(f"Desired path for output TOTP KDBX file ({self._cwd}): ") or self._cwd
-    self._kdbx_totp_pass = getpass("Password for TOTP KDBX: ")
-    if self._kdbx_totp_pass == self._kdbx_pass:
+    self._totp_output_file_name = input(f"Desired name for output TOTP KDBX file ({default_totp_filename}): ") or default_totp_filename
+    self._totp_output_file_path = input(f"Desired path for output TOTP KDBX file ({self._cwd}): ") or self._cwd
+    self._totp_output_file_passkey = getpass("Password for TOTP KDBX: ") or ""
+    if self._totp_output_file_passkey == self._output_file_passkey:
       diff_pass = input("   Using the same password is not as secure as using different passwords. Use different password? (y/n): ")
       if diff_pass == "y":
-        self._kdbx_totp_pass = getpass("Password for TOTP KDBX: ")
-        if self._kdbx_totp_pass == "":
-          self._kdbx_totp_pass = self.empty_input_handler("Password for TOTP KDBX", "Error: No password provided.", allow_ignore=True)
+        self._totp_output_file_passkey = getpass("Password for TOTP KDBX: ") or ""
+        if self._totp_output_file_passkey == "":
+          self._totp_output_file_passkey = self.empty_input_handler("Password for TOTP KDBX", "Error: No password provided.", allow_ignore=True)
   
   def get_new_timestamp(self):
     return datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]
@@ -151,15 +151,15 @@ class Config():
   
   @property
   def totp_output_path(self):
-    return self._totp_output_path
+    return self._totp_output_file_path
   
   @property
   def totp_output_name(self):
-    return self._totp_output_name
+    return self._totp_output_file_name
   
   @property
   def totp_output_passkey(self):
-    return self._totp_output_passkey
+    return self._totp_output_file_passkey
 
   @property
   def encrypted_file_passkey(self):
